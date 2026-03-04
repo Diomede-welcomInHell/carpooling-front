@@ -1,6 +1,6 @@
 "use client";
 
-import {Button, Form, Input, Label, TextField, Card} from "@heroui/react";
+import {Button, Form, Input, Label, TextField, Card, Spinner} from "@heroui/react";
 import {login} from '@/lib/auth';
 import {useState} from "react";
 import Link from "next/link";
@@ -67,6 +67,10 @@ export default function LoginPage() {
                                                                           variant="outline">S&apos;inscrire</Button></Link>
                     </Card.Footer>
                 </Form>
+                {loading && (<div className="flex flex-col items-center gap-2">
+                    <Spinner size="xl" />
+                    <span className="text-xs text-muted">Connexion...</span>
+                    </div>)}
             </Card>
         </div>
     );
