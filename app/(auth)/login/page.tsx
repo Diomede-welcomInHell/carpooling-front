@@ -1,7 +1,6 @@
 "use client";
 
-import {Check} from "@gravity-ui/icons";
-import {Button, Description, FieldError, Form, Input, Label, TextField, Card} from "@heroui/react";
+import {Button, Form, Input, Label, TextField, Card} from "@heroui/react";
 import {login} from '@/lib/auth';
 import {useState} from "react";
 import Link from "next/link";
@@ -20,7 +19,7 @@ export default function LoginPage() {
             setError(result.error)
             setLoading(false)
         }
-    };
+    }
 
     return (
         <div className="flex items-center justify-center h-screen">
@@ -45,7 +44,7 @@ export default function LoginPage() {
                             </TextField>
                             <TextField name="password" type="password"
                                        validate={(value) => {
-                                           if (value.length < 8) {
+                                           if (value.length < 3) {
                                                return "Password must be at least 8 characters";
                                            }
                                            return null;}}
