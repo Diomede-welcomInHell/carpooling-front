@@ -7,7 +7,7 @@ export const Register = z.object({
 }).refine(
     (data) => data.password === data.password_confirmation,
     {
-        message: "Passwords do not match",
+        message: "Le mot de passe ne correspond pas à la vérification",
         path: ["password_confirmation"],
     }
 );

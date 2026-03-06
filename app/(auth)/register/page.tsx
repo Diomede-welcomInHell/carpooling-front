@@ -1,36 +1,15 @@
 "use client";
 import {GoArrowLeft} from "react-icons/go";
-import {Button, Form, Input, Label, TextField, Card} from "@heroui/react";
-import {useState} from "react";
+import {Button, Form, Input, Label, TextField, Card, Spinner} from "@heroui/react";
+import {useActionState, useState} from "react";
 import Link from "next/link";
 
-import {Register} from "@/config/zodSchema";
-import {register} from "node:module";
+import { register } from "@/lib/register";
 
 export default function RegisterPage() {
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
 
-    async function handleSubmit(formData: FormData) {
-        setLoading(true)
-        setError(null)
-console.log(formData);
-        const data = Register.safeParse({email : formData.get("email"), password : formData.get("password"), password_confirmation : formData.get("confPassword")});
-        console.log(data);
-        //const registerData = Register.safeParse(data);
-        if (data.success) {
-            console.log("Register success");
-        } else {
-            console.log("Register error");
-            setError("problème de type" + data.error);
-        }
-       // const result = await register(formData)
-
-        // if (result?.error) {
-        //     setError(result.error)
-        //     setLoading(false)
-        // }
-    }
+    const [state, formAction, isLoading] = useActionState(register, null);
+    const [email, setEmail] = useState(state?.fields?.email ?? "");
 
     return (
         <div className="flex items-center justify-center h-screen">
@@ -42,7 +21,7 @@ console.log(formData);
                     </Card.Title>
                 </Card.Header>
 
-                <Form action={handleSubmit} className="p-4">
+                <Form action={formAction} className="p-4">
                     <Card.Content>
                         <div className="flex flex-col gap-4">
                             <TextField name="email" type="email"
@@ -54,7 +33,10 @@ console.log(formData);
                                        }}
                             >
                                 <Label className="text-black">Email</Label>
-                                <Input placeholder="email@example.com" variant="secondary"/>
+                                <Input placeholder="email@example.com" variant="secondary"
+                                       value={email}
+                                       onChange={(e) => setEmail(e.target.value)}
+                                />
                             </TextField>
                             <TextField name="password" type="password"
                                        validate={(value) => {
@@ -65,7 +47,8 @@ console.log(formData);
                                        }}
                             >
                                 <Label className="text-black">Mot de passe</Label>
-                                <Input placeholder="••••••••" variant="secondary"/>
+                                <Input placeholder="••••••••" variant="secondary"
+                                />
                             </TextField>
                             <TextField name="confPassword" type="password"
                                        validate={(value) => {
@@ -81,18 +64,22 @@ console.log(formData);
                         </div>
                     </Card.Content>
                     <Card.Footer className="mt-4 flex flex-col gap-2">
-                        {error && (
+                        {state?.error && (
                             <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                                <p className="text-red-600 text-sm">{error}</p>
+                                <p className="text-red-600 text-sm">{state?.error}</p>
                             </div>
                         )}
-                        <Button className="w-full" type="submit">
-                            Valider S&apos;inscrption
+                        <Button className="w-full" type="submit" isDisabled={isLoading}>
+                            Valider l&apos;inscription
                         </Button>
                         <Link href="/login" className="w-full"><Button className="w-full border-blue-500"
                                                                           variant="outline">Annuler</Button></Link>
                     </Card.Footer>
                 </Form>
+                {isLoading && (<div className="flex flex-col items-center gap-2">
+                    <Spinner size="xl" />
+                    <span className="text-xs text-muted">Création du compte</span>
+                </div>)}
             </Card>
         </div>
     );
