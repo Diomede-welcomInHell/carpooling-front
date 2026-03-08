@@ -3,6 +3,7 @@
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 
+
 export async function login(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -27,6 +28,8 @@ export async function login(formData: FormData) {
 
     const token = data.token;
 
+    // const idUser = data.id;
+
     if (!token) {
         return { error: 'Token manquant dans la réponse' }
     }
@@ -38,6 +41,14 @@ export async function login(formData: FormData) {
         maxAge: 60 * 60 * 24,
         path: '/',
     });
+
+//     (await cookies()).set("userId", String(idUser), {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === 'production',
+//     sameSite: 'lax',
+//     maxAge: 60 * 60 * 24,
+//     path: '/',
+// });
 
     redirect('/search-trip');
 
