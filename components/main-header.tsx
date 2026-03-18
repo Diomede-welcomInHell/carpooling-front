@@ -27,7 +27,7 @@ Header
                         Vos Trajets
                     </div>
                 </NavLink>
-                <NavLink href={'/new-trips'}>
+                <NavLink href={'/new-trip'}>
                     <div className="flex flex-col items-center justify-between">
                         <FaCarOn />
                         Publier un trajet

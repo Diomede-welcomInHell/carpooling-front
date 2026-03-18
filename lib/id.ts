@@ -8,5 +8,9 @@ export async function getUserId() {
     if (!token) return null;
     
     const payload = decodeJwt(token); // pas de vérification de signature
-    return payload.sub ?? payload.id ?? payload.userId; // selon comment ton backend nomme le champ
+    console.log("Decode JWT : " + JSON.stringify(payload, null, 2));
+    console.log("payload.idUser" + payload.idUser);
+    console.log("payload.idUser" + JSON.stringify(payload.idUser));
+    console.log("ID utilisateur :", payload.idUser, typeof payload.idUser);
+    return  payload.idUser// selon comment ton backend nomme le champ
 }

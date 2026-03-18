@@ -5,19 +5,28 @@ import {getUserId} from "./id";
 import { ProfilData } from "@/config/zodSchema";
 
 
-//TODO voir pour récupérer le profil de quelqu'un - voir le chemin de l'api qui n'est pas accéssible
 export async function getProfil() {
-    
+
+    const id = await getUserId();
     const option : RequestInit = {method : 'GET'}
-    const endpoint : string = "api/persons/" + getUserId; 
+    const endpoint : string = "/api/persons/" + id;
 
-    const res = apiFetch(endpoint, option);
+    const res = await apiFetch(endpoint, option);
 
-    return res;
+    const data = await res.json();
+
+    return {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        phone: data.phone,
+        email: data.email,
+        id_car: data.idCar,
+    };
+
 }
 
 export async function addProfil(prevState: unknown, formData: FormData) {
-    //TODO transformer zod
+
     const profilData = ProfilData.safeParse({
       firstname : formData.get("firstname"),
       lastname : formData.get("lastname"),
@@ -52,5 +61,45 @@ console.log(data);
         lastname: data.lastname,
         phone : data.phone
      };
+
+}
+
+
+export async function updateProfil(prevState: unknown, formData: FormData) {
+
+    const profilData = ProfilData.safeParse({
+        firstname : formData.get("firstname"),
+        lastname : formData.get("lastname"),
+        phone : formData.get("phone")
+    });
+
+    if (profilData.error) {
+        return {
+            error: profilData.error.issues.map(e => e.message).join(", "),
+        };
+    }
+
+    const id = await getUserId();
+    const endpoint : string = "/api/persons/" + id;
+
+    const option : RequestInit = {method : 'PATCH',
+        body: JSON.stringify({ firstname: profilData.data.firstname,
+            lastname: profilData.data.lastname,
+            phone : profilData.data.phone }),
+    }
+
+    const res = await apiFetch(endpoint, option);
+
+    if (!res.ok) {
+        return { error: "Une erreur est survenue" };
+    }
+    const data = await res.json();
+
+    console.log(data);
+
+    return { firstname: data.firstname,
+        lastname: data.lastname,
+        phone : data.phone
+    };
 
 }
