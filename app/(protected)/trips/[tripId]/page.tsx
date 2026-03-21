@@ -3,6 +3,8 @@ import {Trip} from "@/config/zodSchema";
 import {notFound} from "next/navigation";
 import { Surface } from '@heroui/react';
 import { FaFlagCheckered } from "react-icons/fa6";
+import TripResumCard from "@/components/trip-component/trip-resum-card";
+import TripDetailCard from "@/components/trip-component/trip-detail-card";
 
 //TODO not found
 
@@ -16,31 +18,28 @@ export default async function TripsDetailPage({ params } : { params: Promise<{ t
         notFound();
     }
     return (
-
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                    <Surface className="flex min-w-[320px] flex-col gap-3 rounded-3xl p-6" variant="default">
-                        <h3 className="text-base font-semibold text-foreground">
-                            {trip.starting_address.city_name}
-                        </h3>
-                        <p className="text-sm text-muted">
-
-                        </p>
-                    </Surface>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <Surface className="flex min-w-[320px] flex-col gap-3 rounded-3xl p-6" variant="default">
-                        <h3 className="text-base font-semibold text-foreground">
-                            Trajet
-                        </h3>
-                        <p className="text-sm text-muted">
-                            <FaFlagCheckered />  {trip.arrival_address.street_name}, {trip.arrival_address.city_name} ({trip.arrival_address.postal_code})
-                        </p>
-                    </Surface>
-                </div>
+        <div className="min-h-screen bg-default-50 pb-24">
+            <div className="mx-auto max-w-md px-4 py-6 flex flex-col gap-4">
+        <TripResumCard
+            cityEnd={trip.arrival_address.city_name}
+            cityStart={trip.starting_address.city_name}
+            datetime={trip.trip_datetime}
+            available_seats={trip.available_seats} />
+                <TripDetailCard
+                    cityEnd={trip.arrival_address.city_name}
+                    streetEnd={trip.arrival_address.street_name}
+                    codeEnd={trip.arrival_address.postal_code}
+                    cityStart={trip.starting_address.city_name}
+                    streetStart={trip.starting_address.street_name}
+                    codeStart={trip.starting_address.postal_code}
+                    km={trip.km}
+                    carBrand={trip.car.brand}
+                    carModel={trip.car.model}
+                    driverFirstName={trip.driver.firstname}
+                    driverLastName={trip.driver.lastname}/>
             </div>
-
-
+            {/* ── Boutons + Modales ────────────────────────────────── */}
+        </div>
     )
 
 }
