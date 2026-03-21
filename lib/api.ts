@@ -19,7 +19,6 @@ export async function apiFetch(
         })
         // Token expiré ou invalide → déconnexion automatique
         if (res.status === 401) {
-            (await cookies()).delete('jwt')
             redirect('/login')
         }
     return res;

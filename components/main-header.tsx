@@ -9,7 +9,7 @@ export default function MainHeader() {
         <header className="w-full pt-6 px-2 main-header bg-blue-500 text-white">
 Header
             <nav className="flex flex-wrap items-center justify-between">
-                <NavLink href={'/all-trips'}>
+                <NavLink href={'/trips'}>
                     <div className="flex flex-col items-center justify-between">
                         <TbCarFilled />
                         Tous les trajets

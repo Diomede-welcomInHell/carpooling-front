@@ -39,14 +39,17 @@ export const TripParams = z.object({
     startingcity: z.string()
         .max(100, "Vous avez dépassé le nombre de caractères autorisés")
         .regex(/^[a-zA-ZÀ-ÿ\s\-]+$/, "La ville ne peut contenir que des lettres")
-        .nullable(),
+        .nullable()
+    .optional(),
     arrivalcity: z.string()
         .max(100, "Vous avez dépassé le nombre de caractères autorisés")
         .regex(/^[a-zA-ZÀ-ÿ\s\-]+$/, "La ville ne peut contenir que des lettres")
-        .nullable(),
+        .nullable()
+        .optional(),
     tripdate: z.string()
         .regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/, "La date doit être au format yyyy-MM-dd HH:mm")
         .nullable()
+        .optional()
 })
 
 type TripParams = z.infer<typeof TripParams>;
@@ -91,3 +94,25 @@ export const TripCreateParams = z.object({
 });
 
 type TripCreateParams = z.infer<typeof TripCreateParams>;
+
+
+const TripSchema = z.object({
+    arrival_address: AddressSchema,
+    available_seats: z.number(),
+    car: z.object({ brand: z.string(), model: z.string() }),
+    driver: z.object({
+        email: z.string(),
+        firstname: z.string(),
+        idUser: z.number().nullable(),
+        lastname: z.string(),
+    }),
+    idAdresse: z.number().nullable(),
+    idTrip: z.number(),
+    km: z.number(),
+    starting_address: AddressSchema,
+    trip_datetime: z.string(),
+});
+
+// ✅ Le type TypeScript est inféré automatiquement depuis le schéma Zod
+export type Trip = z.infer<typeof TripSchema>;
+export { TripSchema };

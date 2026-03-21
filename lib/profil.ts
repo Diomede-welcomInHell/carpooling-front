@@ -3,6 +3,8 @@
 import { apiFetch } from "./api";
 import {getUserId} from "./id";
 import { ProfilData } from "@/config/zodSchema";
+import {cookies} from "next/headers";
+import {redirect} from "next/navigation";
 
 
 export async function getProfil() {
@@ -12,6 +14,10 @@ export async function getProfil() {
     const endpoint : string = "/api/persons/" + id;
 
     const res = await apiFetch(endpoint, option);
+
+    if (res.status === 401) {
+        redirect('/login')
+    }
 
     const data = await res.json();
 

@@ -1,7 +1,7 @@
 'use server';
 
 import {apiFetch} from "@/lib/api";
-import {AddressSchema, TripCreateParams, TripParams} from "@/config/zodSchema";
+import {AddressSchema, TripCreateParams, TripParams, Trip, TripSchema} from "@/config/zodSchema";
 import {getUserId} from "./id";
 import * as z from "zod";
 
@@ -23,30 +23,36 @@ interface Car {
     model: string;
 }
 
-interface TripResponse {
-    idTrip: number;
-    km: number;
-    available_seats: number;
-    trip_datetime: string;
-    driver: Driver;
-    car: Car;
-    starting_address: Address;
-    arrival_address: Address;
-    idAdresse: number | null;
-}
+// interface TripResponse {
+//     idTrip: number;
+//     km: number;
+//     available_seats: number;
+//     trip_datetime: string;
+//     driver: Driver;
+//     car: Car;
+//     starting_address: Address;
+//     arrival_address: Address;
+//     idAdresse: number | null;
+// }
+
+export type TripsResult =
+    | { success: true; data: Trip[] }
+    | { success: false; error: string }
 
 
-export async function getTripsFilter(formData: FormData) {
+
+export async function getTripsFilter(formData?: FormData) : Promise<TripsResult>  {
     console.log('formData :', formData);
 
     const tripData = TripParams.safeParse({
-        startingcity: formData.get("startingcity"),
-        arrivalcity: formData.get("arrivalcity"),
-        tripdate: formData.get("tripdate"),
+        startingcity: formData?.get("startingcity"),
+        arrivalcity: formData?.get("arrivalcity"),
+        tripdate: formData?.get("tripdate"),
     });
 
     if (tripData.error) {
         return {
+            success: false,
             error: tripData.error.issues.map(e => e.message).join(", ")
         };
     }
@@ -74,77 +80,58 @@ export async function getTripsFilter(formData: FormData) {
     const res = await apiFetch(endpoint, option);
 
     if (!res.ok) {
-        return { error: "Une erreur est survenue" };
+        return { success: false, error: "Une erreur est survenue" };
     }
 
     const data = await res.json();
 
     // L'API retourne un tableau de voyages
-    return {
-        trips: data.map((trip: TripResponse) => ({
-            idTrip: trip.idTrip,
-            km: trip.km,
-            availableSeats: trip.available_seats,
-            tripDatetime: trip.trip_datetime,
-            driver: {
-                firstname: trip.driver.firstname,
-                lastname: trip.driver.lastname,
-                email: trip.driver.email,
-            },
-            car: {
-                brand: trip.car.brand,
-                model: trip.car.model,
-            },
-            startingAddress: {
-                cityName: trip.starting_address.city_name,
-                postalCode: trip.starting_address.postal_code,
-                streetName: trip.starting_address.street_name,
-            },
-            arrivalAddress: {
-                cityName: trip.arrival_address.city_name,
-                postalCode: trip.arrival_address.postal_code,
-                streetName: trip.arrival_address.street_name,
-            },
-        }))
-    };
+    return {success: true, data: z.array(TripSchema).parse(data)};
+
 }
 
-export async function getTripById(id: number) {
-    const endpoint: string = "/api/trips/" + id;
+export async function getTripById(id: number) : Promise<Trip | null> {
+    const endpoint: string = "/api/trips/" + String(id);
+    console.log("🧐🧐🧐" + endpoint);
     const option: RequestInit = { method: 'GET' };
     const res = await apiFetch(endpoint, option);
 
+    if (res.status === 404) {
+        return null; // géré avec notFound() dans la page
+    }
+
     if (!res.ok) {
-        return { error: "Une erreur est survenue" };
+        throw new Error("Erreur lors de la récupération du trajet");
     }
 
     const trip = await res.json();
-
-    return {
-            idTrip: trip.idTrip,
-            km: trip.km,
-            availableSeats: trip.available_seats,
-            tripDatetime: trip.trip_datetime,
-            driver: {
-                firstname: trip.driver.firstname,
-                lastname: trip.driver.lastname,
-                email: trip.driver.email,
-            },
-            car: {
-                brand: trip.car.brand,
-                model: trip.car.model,
-            },
-            startingAddress: {
-                cityName: trip.starting_address.city_name,
-                postalCode: trip.starting_address.postal_code,
-                streetName: trip.starting_address.street_name,
-            },
-            arrivalAddress: {
-                cityName: trip.arrival_address.city_name,
-                postalCode: trip.arrival_address.postal_code,
-                streetName: trip.arrival_address.street_name,
-            },
-        }
+    
+    return  TripSchema.parse(trip);
+    // return {
+    //         idTrip: trip.idTrip,
+    //         km: trip.km,
+    //         availableSeats: trip.available_seats,
+    //         tripDatetime: trip.trip_datetime,
+    //         driver: {
+    //             firstname: trip.driver.firstname,
+    //             lastname: trip.driver.lastname,
+    //             email: trip.driver.email,
+    //         },
+    //         car: {
+    //             brand: trip.car.brand,
+    //             model: trip.car.model,
+    //         },
+    //         startingAddress: {
+    //             cityName: trip.starting_address.city_name,
+    //             postalCode: trip.starting_address.postal_code,
+    //             streetName: trip.starting_address.street_name,
+    //         },
+    //         arrivalAddress: {
+    //             cityName: trip.arrival_address.city_name,
+    //             postalCode: trip.arrival_address.postal_code,
+    //             streetName: trip.arrival_address.street_name,
+    //         },
+    //     }
 
 }
 
@@ -156,11 +143,7 @@ export async function getTripById(id: number) {
 
         const time = rawData.time.slice(0, 5)
         const trip_datetime = `${rawData.date} ${time}`;
-        console.log("🕰️ Trip time" + trip_datetime);
 
-            console.log("🧟 id user" + person_id);
-
-        console.log("🚗 km" + rawData.km);
 
         const starting_address = prepareAdresse(formData.get("starting_city") as string,
             formData.get("street_name_start") as string,);
@@ -182,7 +165,7 @@ export async function getTripById(id: number) {
 
         console.log("tripData to send :" + JSON.stringify(tripData.data));
 
-        const endpoint: string = "/api/trips/";
+        const endpoint: string = "/api/trips";
 
         const option: RequestInit = {
             method: 'POST',
