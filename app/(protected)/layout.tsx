@@ -13,11 +13,10 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body>
+    <>
       <MainHeader />
         {children}
-      </body>
-    </html>
+    </>
+    
   );
 }
