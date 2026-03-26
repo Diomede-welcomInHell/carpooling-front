@@ -15,7 +15,11 @@ export default function AppLayout({
   return (
     <>
       <MainHeader />
+      <div className="min-h-screen pb-24">
+        <div className="mx-auto max-w-md px-4 py-6 flex flex-col gap-4 items-center">
         {children}
+        </div>
+      </div>
     </>
     
   );

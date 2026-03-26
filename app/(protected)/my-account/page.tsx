@@ -11,14 +11,12 @@ import CarSection from "@/components/car-component/car-section";
 
 export default async function MyAccountPage(){
    const res = await getProfil();
-    console.log("🐋🐋🐋🐋🐋 res : " + res.id_car);
 
     const hasCar : boolean = await res.id_car != null;
     let resCar;
     if(hasCar){
       resCar = await getCar(res.id_car);
     }
-    console.log("1️⃣ récupère la voiture :" + resCar?.model);
     return  <>
     <header className="flex flex-col items-center justify-center p-8">
 <VscAccount size="40px" />
@@ -38,7 +36,7 @@ export default async function MyAccountPage(){
 {/* Supprimer une voiture */}
 
 
-        <Button variant="danger-soft" onClick={logout}>Deconnexion</Button>
+        <Button variant="danger-soft" className="w-full" onClick={logout}>Deconnexion</Button>
     </main>
     </>
 }

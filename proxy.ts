@@ -18,18 +18,18 @@ export function proxy(req: NextRequest) {
 
     const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
 
-    // if (token && isTokenExpired(token)) {
-    //     const response = NextResponse.redirect(new URL('/login', req.url))
-    //     response.cookies.delete('jwt')
-    //     return response
-    // }
+    if (token && isTokenExpired(token)) {
+        const response = NextResponse.redirect(new URL('/login', req.url))
+        response.cookies.delete('jwt')
+        return response
+    }
 
     if(!token && !isPublicRoute) {
         return NextResponse.redirect(new URL(`/login`, req.url));
     }
 
     if(token && isPublicRoute) {
-        return NextResponse.redirect(new URL(`/search-trip`, req.url));
+        return NextResponse.redirect(new URL(`/trips`, req.url));
     }
 
 

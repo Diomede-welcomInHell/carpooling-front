@@ -75,7 +75,7 @@ export function TripCityAutoComplete({
                     onChange?.(value);
                 }}
             >
-                <Label>{title}</Label>
+                <Label className="text-base">{title}</Label>
                 <ComboBox.InputGroup>
                     <Input placeholder="Ville..." name={nameInput} />
                     <ComboBox.Trigger />

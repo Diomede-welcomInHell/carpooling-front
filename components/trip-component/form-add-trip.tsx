@@ -27,8 +27,7 @@ export default function FormAddTrip() {
 
 
     return (
-        <div className="flex flex-col items-center justify-center my-8">
-            <h2>Information voiture</h2>
+        <div className="flex flex-col items-center justify-center">
 
             <Form action={formAction} className="p-2">
                 <div className="flex flex-col gap-4">

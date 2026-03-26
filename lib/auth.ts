@@ -50,7 +50,7 @@ export async function login(formData: FormData) {
 //     path: '/',
 // });
 
-    redirect('/search-trip');
+    redirect('/trips');
 
 }
 
