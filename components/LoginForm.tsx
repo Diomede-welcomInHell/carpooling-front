@@ -22,6 +22,7 @@ export default function LoginFrom ({flash} : {flash? : string}) {
         return (
             <>
                 {flash && (
+                    <div className="fixed top-4 right-4 z-50 left-1/2 -translate-x-1/2 max-w-md animate-in fade-in slide-in-from-top-2">
                     <Alert status="success">
                         <Alert.Indicator />
                         <Alert.Content>
@@ -29,6 +30,7 @@ export default function LoginFrom ({flash} : {flash? : string}) {
                         </Alert.Content>
                         <CloseButton />
                     </Alert>
+                    </div>
                 )}
             <div className="flex items-center justify-center h-screen">
                 <Card className="w-full max-w-md p-0 shadow">

@@ -8,7 +8,6 @@ export async function apiFetch(
     options: RequestInit = {}
 ) {
         const token = (await cookies()).get('jwt')?.value
-
         const res = await fetch(`${process.env.API_URL}${endpoint}`, {
             ...options,
             headers: {

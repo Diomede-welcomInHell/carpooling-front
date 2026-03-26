@@ -1,8 +1,13 @@
 import * as z from "zod";
 
 export const Register = z.object({
-    email: z.email(),
-    password: z.string().min(3),
+    email: z.email({ message: "L'adresse email est invalide" }),
+    password: z
+        .string()
+        .min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" })
+        .regex(/[a-z]/, { message: "Le mot de passe doit contenir au moins une lettre minuscule" })
+        .regex(/[A-Z]/, { message: "Le mot de passe doit contenir au moins une lettre majuscule" })
+        .regex(/[0-9]/, { message: "Le mot de passe doit contenir au moins un chiffre" }),
     password_confirmation: z.string(),
 }).refine(
     (data) => data.password === data.password_confirmation,
@@ -116,3 +121,55 @@ const TripSchema = z.object({
 // ✅ Le type TypeScript est inféré automatiquement depuis le schéma Zod
 export type Trip = z.infer<typeof TripSchema>;
 export { TripSchema };
+
+
+const PersonInfoSchema = z.object({
+    idPerson: z.number(),
+    idUser: z.number().nullable(),
+    idCar: z.number().nullable(),
+    firstname: z.string(),
+    lastname: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    status: z.string().nullable(),
+});
+export type Person = z.infer<typeof PersonInfoSchema>;
+export { PersonInfoSchema}
+
+
+const BookingSchema = z.object({
+    cancel: z.boolean(),
+    idBooking: z.number(),
+    date_booking: z.string(),
+    user_info: PersonInfoSchema,
+});
+export type Booking = z.infer<typeof BookingSchema>;
+export { BookingSchema };
+
+const TripFullSchema = z.object({
+    id_trip: z.number(),
+    km: z.number(),
+    available_seats: z.number(),
+    trip_datetime: z.string(),
+    starting_address: AddressSchema,
+    arrival_address: AddressSchema,
+
+    car_info: z.object({
+        idCar: z.number(),
+        idUser: z.number(),
+        brand: z.string(),
+        model: z.string(),
+        registration: z.string(),
+        seats: z.number(),
+    }),
+
+    driver_info: PersonInfoSchema,
+
+    driver_id: z.number(),
+    all_booking: z.array(BookingSchema).optional().nullable(),
+});
+
+export type TripFull = z.infer<typeof TripFullSchema>;
+export { TripFullSchema };
+
+

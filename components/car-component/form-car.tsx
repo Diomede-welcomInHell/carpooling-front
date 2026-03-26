@@ -69,20 +69,13 @@ export default function FromCar(car : FormCarProps = {}) {
                 {isCreated ? "Modifier" : "Enregistrer" }
             </Button>
         </Form>
-            {car.onCancel ? (
+            {car.onCancel && (
             <Button className="w-full border-blue-500"
                     variant="outline"
                     onClick={car.onCancel}>
                 Annuler
             </Button>
-            ) :
-                <Button className="w-full border-blue-500"
-                        variant="outline"
-                        //onClick={car.onCancel}
-                    >
-                    Supprimer
-                </Button>
-            }
+            )}
 
         {isLoading && (<div className="flex flex-col items-center gap-2">
             <Spinner size="xl"/>

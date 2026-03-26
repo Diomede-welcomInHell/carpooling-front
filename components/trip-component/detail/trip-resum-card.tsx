@@ -3,6 +3,7 @@
 import {Card, CardHeader, Chip} from "@heroui/react";
 import {FaCalendarAlt, FaClock} from "react-icons/fa";
 import { MdEventSeat } from "react-icons/md";
+import Divider from "@/components/divider";
 
 interface PropsResum {
     cityEnd: string,
@@ -29,14 +30,14 @@ function formatTime(dateStr: string) {
 
 export default function TripResumCard(props: PropsResum) {
     return (
-        <Card className="shadow-md text-black">
+        <Card className="w-full bg-background/80 backdrop-blur-md border border-divider shadow-md text-foreground">
             <CardHeader className="flex flex-col items-center gap-4 pt-6 pb-4 px-6">
 
                 {/* Départ → Arrivée */}
                 <div className="flex w-full items-center justify-between gap-2">
                     <div className="flex flex-col items-center flex-1">
                         <p className="text-xs text-default-500 uppercase tracking-widest mb-1">Départ</p>
-                        <p className="text-xl font-bold text-center text-black">
+                        <p className="text-xl font-bold text-center text-foreground">
                             {props.cityStart}
                         </p>
                     </div>
@@ -50,13 +51,13 @@ export default function TripResumCard(props: PropsResum) {
 
                     <div className="flex flex-col items-center flex-1">
                         <p className="text-xs text-default-500 uppercase tracking-widest mb-1">Arrivée</p>
-                        <p className="text-xl font-bold text-black text-center">
+                        <p className="text-xl font-bold text-foreground text-center">
                             {props.cityEnd}
                         </p>
                     </div>
                 </div>
 
-                <div className="w-full h-px bg-gray-300 my-4"></div>
+                <Divider/>
 
                 {/* Date / Heure / Places */}
                 <div className="flex w-full justify-between items-start">
