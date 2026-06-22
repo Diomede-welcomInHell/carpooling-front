@@ -27,19 +27,19 @@ export default async function TripsPage({searchParams,}: {
                 {res.success ? (
                     res.data
                         .filter((trip: Trip) => {
-                            const tripDate = new Date(trip.trip_datetime);
-                            return tripDate > new Date() && trip.available_seats > 0;
+                            const tripDate = new Date(trip.tripDatetime);
+                            return tripDate > new Date() && trip.availableSeats > 0;
                         })
                         .sort((a: Trip, b: Trip) => {
-                            return new Date(a.trip_datetime).getTime() - new Date(b.trip_datetime).getTime();
+                            return new Date(a.tripDatetime).getTime() - new Date(b.tripDatetime).getTime();
                         })
                         .map((trip: Trip) => (
                         <CardTripPreview
                             key={trip.idTrip}
-                            start_city_name={trip.starting_address.city_name}
-                            arrival_city_name={trip.arrival_address.city_name}
-                            trip_datetime={trip.trip_datetime}
-                            available_seats={trip.available_seats}
+                            start_city_name={trip.startingAddress.cityName}
+                            arrival_city_name={trip.arrivalAddress.cityName}
+                            trip_datetime={trip.tripDatetime}
+                            available_seats={trip.availableSeats}
                             km={trip.km}
                             name_driver={`${trip.driver.firstname} ${trip.driver.lastname}`}
                             link_detail={`/trips/${trip.idTrip}`}
