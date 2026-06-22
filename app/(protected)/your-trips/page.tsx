@@ -24,14 +24,14 @@ export default async function YourTrips() {
             if (!currentUserId) return true;
 
             //booking utilisateur connecté
-            const userBooking = trip.all_booking?.find(
+            const userBooking = trip.allBooking?.find(
                 (b) => b.user_info.idUser === currentUserId
             );
 
             // 3. Condition de survie du trajet dans la liste :
             // - Soit l'utilisateur est le conducteur (il doit voir son trajet même sans booking)
             // - Soit il a un booking et celui-ci n'est PAS annulé
-            const isDriver = trip.driver_id === currentUserId;
+            const isDriver = trip.driverId === currentUserId;
             const hasActiveBooking = userBooking && !userBooking.cancel;
 
             return isDriver || hasActiveBooking;
@@ -45,15 +45,15 @@ export default async function YourTrips() {
             <div className="px-4 pb-2 flex flex-col items-center gap-4 w-full">
                 {tripsToShow.map((trip) => (
                     <CardTripPreview
-                        key={trip.id_trip}
+                        key={trip.idTrip}
                         // ... tes props habituelles
-                        start_city_name={trip.starting_address.city_name}
-                        arrival_city_name={trip.arrival_address.city_name}
-                        trip_datetime={trip.trip_datetime}
-                        available_seats={trip.available_seats}
+                        start_city_name={trip.startingAddress.cityName}
+                        arrival_city_name={trip.arrivalAddress.cityName}
+                        trip_datetime={trip.tripDatetime}
+                        available_seats={trip.availableSeats}
                         km={trip.km}
-                        name_driver={`${trip.driver_info.firstname} ${trip.driver_info.lastname}`}
-                        link_detail={`/your-trips/${trip.id_trip}`}
+                        name_driver={`${trip.driverInfo.firstname} ${trip.driverInfo.lastname}`}
+                        link_detail={`/your-trips/${trip.idTrip}`}
                     />
                 ))}
             </div>

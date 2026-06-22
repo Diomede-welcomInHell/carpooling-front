@@ -27,19 +27,19 @@ export default async function TripsDetailPage({params}: { params: Promise<{ trip
         notFound(); // ou redirect(), ou affiche une erreur
     }
 
-    const activeBookings: Booking[] = trip.all_booking?.filter(
+    const activeBookings: Booking[] = trip.allBooking?.filter(
         (booking) => !booking.cancel
     ) ?? [];
 
-    const isDriver: boolean = trip.driver_id === idUser;
+    const isDriver: boolean = trip.driverId === idUser;
 
-    const userBooking: Booking | undefined = (trip.all_booking ?? []).find(
+    const userBooking: Booking | undefined = (trip.allBooking ?? []).find(
         booking => booking.user_info.idUser === idUser && !booking.cancel
     );
 
 
     const isPassanger: boolean = !isDriver && userBooking !== undefined;
-    const actionTripId: number = isPassanger ? userBooking!.idBooking : trip.id_trip;
+    const actionTripId: number = isPassanger ? userBooking!.idBooking : trip.idTrip;
 
     console.log("Je suis passager :", isPassanger);
 console.log("actionTripId : ", actionTripId);
@@ -61,29 +61,29 @@ console.log("idBooking : ", activeBookings);
             <div className="min-h-screen bg-default-50 pb-30">
                 <div className="mx-auto max-w-md mb-8 flex flex-col gap-4">
                     <TripResumCard
-                        cityEnd={trip.arrival_address.city_name}
-                        cityStart={trip.starting_address.city_name}
-                        datetime={trip.trip_datetime}
-                        available_seats={trip.available_seats}
+                        cityEnd={trip.arrivalAddress.cityName}
+                        cityStart={trip.startingAddress.cityName}
+                        datetime={trip.tripDatetime}
+                        available_seats={trip.availableSeats}
                     />
                     <TripTrajetCard
-                        cityEnd={trip.arrival_address.city_name}
-                        streetEnd={trip.arrival_address.street_name}
-                        codeEnd={trip.arrival_address.postal_code}
-                        cityStart={trip.starting_address.city_name}
-                        streetStart={trip.starting_address.street_name}
-                        codeStart={trip.starting_address.postal_code}
+                        cityEnd={trip.arrivalAddress.cityName}
+                        streetEnd={trip.arrivalAddress.streetName}
+                        codeEnd={trip.arrivalAddress.postalCode}
+                        cityStart={trip.startingAddress.cityName}
+                        streetStart={trip.startingAddress.streetName}
+                        codeStart={trip.startingAddress.postalCode}
                         km={trip.km}
                     />
-                    <TripCarCard model={trip.car_info.model} brand={trip.car_info.brand}
-                                 registration={trip.car_info.registration}/>
+                    <TripCarCard model={trip.carInfo.model} brand={trip.carInfo.brand}
+                                 registration={trip.carInfo.registration}/>
 
-                    <TripDriverCard idUser={trip.driver_id}
+                    <TripDriverCard idUser={trip.driverId}
                                     isPassager={isPassanger}
-                                    firstname={trip.driver_info.firstname}
-                                    lastname={trip.driver_info.lastname}
-                                    email={trip.driver_info.email}
-                                    phone={trip.driver_info.phone}/>
+                                    firstname={trip.driverInfo.firstname}
+                                    lastname={trip.driverInfo.lastname}
+                                    email={trip.driverInfo.email}
+                                    phone={trip.driverInfo.phone}/>
 
                     <TripPassagerCard
                         idUser={id}
@@ -96,7 +96,7 @@ console.log("idBooking : ", activeBookings);
                         buttonLabel="Annuler"
                         confirmationText="annulation"
                         tripId={actionTripId}
-                        idDest={trip.driver_id ?? 0}
+                        idDest={trip.driverId ?? 0}
                         url={"/your-trips"}
                     />
                 ) : (
