@@ -26,7 +26,7 @@ export default function TripPassagerCard({idUser, isDriver, bookings}: PropsList
                     <div>Aucun passager</div>
                 ) : (
                     activeBookings.map((booking, index) => {
-                        const passager = booking.user_info;
+                        const passager = booking.userInfo;
 
                         return (
                             <div key={passager.idUser ?? passager.idPerson} className="flex flex-col">
