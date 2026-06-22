@@ -39,17 +39,17 @@ export default async function TripsDetailPage({params}: { params: Promise<{ trip
         <div className="min-h-screen bg-default-50 pb-30 ">
             <div className="mx-auto max-w-md mb-8 flex flex-col gap-4">
                 <TripResumCard
-                    cityEnd={trip.arrival_address.city_name}
-                    cityStart={trip.starting_address.city_name}
-                    datetime={trip.trip_datetime}
-                    available_seats={trip.available_seats}/>
+                    cityEnd={trip.arrivalAddress.cityName}
+                    cityStart={trip.startingAddress.cityName}
+                    datetime={trip.tripDatetime}
+                    available_seats={trip.availableSeats}/>
                 <TripDetailCard
-                    cityEnd={trip.arrival_address.city_name}
-                    streetEnd={trip.arrival_address.street_name}
-                    codeEnd={trip.arrival_address.postal_code}
-                    cityStart={trip.starting_address.city_name}
-                    streetStart={trip.starting_address.street_name}
-                    codeStart={trip.starting_address.postal_code}
+                    cityEnd={trip.arrivalAddress.cityName}
+                    streetEnd={trip.arrivalAddress.streetName}
+                    codeEnd={trip.arrivalAddress.postalCode}
+                    cityStart={trip.startingAddress.cityName}
+                    streetStart={trip.startingAddress.streetName}
+                    codeStart={trip.startingAddress.postalCode}
                     km={trip.km}
                     carBrand={trip.car.brand}
                     carModel={trip.car.model}

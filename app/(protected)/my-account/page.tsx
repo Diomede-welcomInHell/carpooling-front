@@ -12,10 +12,10 @@ import CarSection from "@/components/car-component/car-section";
 export default async function MyAccountPage(){
    const res = await getProfil();
 
-    const hasCar : boolean = await res.id_car != null;
+    const hasCar : boolean = await res.idCar != null;
     let resCar;
     if(hasCar){
-      resCar = await getCar(res.id_car);
+      resCar = await getCar(res.idCar);
     }
     return  <>
     <header className="flex flex-col items-center justify-center p-8">
@@ -30,7 +30,7 @@ export default async function MyAccountPage(){
 
         <CarSection
             hasCar={hasCar}
-            idCar={res.id_car}
+            idCar={res.idCar}
             resCar={resCar}
         />
 {/* Supprimer une voiture */}

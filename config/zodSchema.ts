@@ -62,14 +62,14 @@ type TripParams = z.infer<typeof TripParams>;
 
 
 export const AddressSchema = z.object({
-    street_name: z
+    streetName: z
         .string({ error: "Le nom de la rue est requis" })
         .max(150, "Le nom de la rue est trop long")
         .regex(/^[a-zA-ZÀ-ÿ0-9\s\-]+$/, "Le nom de la rue ne peut contenir que des lettres et chiffres"),
-    postal_code: z
+    postalCode: z
         .string({ error: "Le code postal est requis" })
         .regex(/^\d{5}$/, "Le code postal doit contenir 5 chiffres"),
-    city_name: z
+    cityName: z
         .string({ error: "Le nom de la ville est requis" })
         .max(100, "Le nom de la ville est trop long")
         .regex(/^[a-zA-ZÀ-ÿ\s\-]+$/, "La ville ne peut contenir que des lettres"),
@@ -82,28 +82,28 @@ export const TripCreateParams = z.object({
         .coerce.number({ error: "La distance est requise" })
         .positive("La distance doit être positive")
         .max(10000, "La distance semble incorrecte"),
-    person_id: z
+    personId: z
         .coerce.number({ error: "L'identifiant du conducteur est requis" })
         .int("L'identifiant doit être un entier")
         .positive("L'identifiant doit être positif"),
-    trip_datetime: z
+    tripDatetime: z
         .string({ error: "La date du trajet est requise" })
         .regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/, "La date doit être au format yyyy-MM-dd HH:mm"),
-    available_seats: z
+    availableSeats: z
         .coerce.number({ error: "Le nombre de places est requis" })
         .int("Le nombre de places doit être un entier")
         .min(1, "Il doit y avoir au moins 1 place disponible")
         .max(9, "Le nombre de places ne peut pas dépasser 9"),
-    starting_address: AddressSchema,
-    arrival_address: AddressSchema,
+    startingAddress: AddressSchema,
+    arrivalAddress: AddressSchema,
 });
 
 type TripCreateParams = z.infer<typeof TripCreateParams>;
 
 
 const TripSchema = z.object({
-    arrival_address: AddressSchema,
-    available_seats: z.number(),
+    arrivalAddress: AddressSchema,
+    availableSeats: z.number(),
     car: z.object({ brand: z.string(), model: z.string() }),
     driver: z.object({
         email: z.string(),
@@ -114,8 +114,8 @@ const TripSchema = z.object({
     idAdresse: z.number().nullable(),
     idTrip: z.number(),
     km: z.number(),
-    starting_address: AddressSchema,
-    trip_datetime: z.string(),
+    startingAddress: AddressSchema,
+    tripDatetime: z.string(),
 });
 
 // ✅ Le type TypeScript est inféré automatiquement depuis le schéma Zod
@@ -147,14 +147,14 @@ export type Booking = z.infer<typeof BookingSchema>;
 export { BookingSchema };
 
 const TripFullSchema = z.object({
-    id_trip: z.number(),
+    idTrip: z.number(),
     km: z.number(),
-    available_seats: z.number(),
-    trip_datetime: z.string(),
-    starting_address: AddressSchema,
-    arrival_address: AddressSchema,
+    availableSeats: z.number(),
+    tripDatetime: z.string(),
+    startingAddress: AddressSchema,
+    arrivalAddress: AddressSchema,
 
-    car_info: z.object({
+    carInfo: z.object({
         idCar: z.number(),
         idUser: z.number(),
         brand: z.string(),
@@ -163,10 +163,10 @@ const TripFullSchema = z.object({
         seats: z.number(),
     }),
 
-    driver_info: PersonInfoSchema,
+    driverInfo: PersonInfoSchema,
 
-    driver_id: z.number(),
-    all_booking: z.array(BookingSchema).optional().nullable(),
+    driverId: z.number(),
+    allBooking: z.array(BookingSchema).optional().nullable(),
 });
 
 export type TripFull = z.infer<typeof TripFullSchema>;
