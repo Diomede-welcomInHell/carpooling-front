@@ -34,7 +34,7 @@ export default async function TripsDetailPage({params}: { params: Promise<{ trip
     const isDriver: boolean = trip.driverId === idUser;
 
     const userBooking: Booking | undefined = (trip.allBooking ?? []).find(
-        booking => booking.user_info.idUser === idUser && !booking.cancel
+        booking => booking.userInfo.idUser === idUser && !booking.cancel
     );
 
 

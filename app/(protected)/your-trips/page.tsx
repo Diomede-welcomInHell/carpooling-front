@@ -25,7 +25,7 @@ export default async function YourTrips() {
 
             //booking utilisateur connecté
             const userBooking = trip.allBooking?.find(
-                (b) => b.user_info.idUser === currentUserId
+                (b) => b.userInfo.idUser === currentUserId
             );
 
             // 3. Condition de survie du trajet dans la liste :

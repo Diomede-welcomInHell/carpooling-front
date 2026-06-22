@@ -140,8 +140,8 @@ export { PersonInfoSchema}
 const BookingSchema = z.object({
     cancel: z.boolean(),
     idBooking: z.number(),
-    date_booking: z.string(),
-    user_info: PersonInfoSchema,
+    dateBooking: z.string(),
+    userInfo: PersonInfoSchema,
 });
 export type Booking = z.infer<typeof BookingSchema>;
 export { BookingSchema };
