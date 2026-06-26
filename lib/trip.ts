@@ -231,7 +231,7 @@ export async function addTrip(prevState: unknown, formData: FormData) {
 
         (await cookies()).set("flash", "Votre trajet a bien été ajouté", { maxAge: 5 });
         redirect("/your-trips")
-    } 
+
 }
 
 function prepareAdresse(city_and_code: string, street: string): AddressSchemaType {
