@@ -1,6 +1,6 @@
 'use server';
 
-import {apiFetch} from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import {
     AddressSchema,
     TripCreateParams,
@@ -10,10 +10,10 @@ import {
     TripFullSchema,
     TripFull
 } from "@/config/zodSchema";
-import {getUserId} from "./id";
+import { getUserId } from "./id";
 import * as z from "zod";
-import {cookies} from "next/headers";
-import {redirect} from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface Address {
     city_name: string;
@@ -96,11 +96,11 @@ export async function getTripsFilter(filters?: TripFilters): Promise<TripsResult
     const data = await res.json();
 
     // L'API retourne un tableau de voyages
-    return {success: true, data: z.array(TripSchema).parse(data)};
+    return { success: true, data: z.array(TripSchema).parse(data) };
 
 }
 
-export async function getTripById(id: number) : Promise<Trip | null> {
+export async function getTripById(id: number): Promise<Trip | null> {
     const endpoint: string = "/api/trips/" + String(id);
     const option: RequestInit = { method: 'GET' };
     const res = await apiFetch(endpoint, option);
@@ -114,12 +114,12 @@ export async function getTripById(id: number) : Promise<Trip | null> {
     }
 
     const trip = await res.json();
-    
-    return  TripSchema.parse(trip);
+
+    return TripSchema.parse(trip);
 }
 
 // conducteur
-export async function getTripAsDriver() : Promise<TripsFullResult> {
+export async function getTripAsDriver(): Promise<TripsFullResult> {
     const userId = await getUserId();
     const endpoint: string = "/api/persons/" + userId + "/trips-driver";
     const option: RequestInit = { method: 'GET' };
@@ -131,16 +131,16 @@ export async function getTripAsDriver() : Promise<TripsFullResult> {
 
     const data = await res.json();
 
-    if(Array.isArray(data) &&  data.length === 0) {
+    if (Array.isArray(data) && data.length === 0) {
         return { success: false, error: "Aucun trajet" };
     }
 
     // L'API retourne un tableau de voyages
-    return {success: true, data: z.array(TripFullSchema).parse(data)};
+    return { success: true, data: z.array(TripFullSchema).parse(data) };
 }
 
 // passager
-export async function getTripAsPassanger() : Promise<TripsFullResult> {
+export async function getTripAsPassanger(): Promise<TripsFullResult> {
     const userId = await getUserId();
     const endpoint: string = "/api/persons/" + userId + "/trips-passenger";
     const option: RequestInit = { method: 'GET' };
@@ -152,16 +152,16 @@ export async function getTripAsPassanger() : Promise<TripsFullResult> {
 
     const data = await res.json();
 
-    if(Array.isArray(data) &&  data.length === 0) {
+    if (Array.isArray(data) && data.length === 0) {
         return { success: false, error: "Aucun trajet" };
     }
 
     // L'API retourne un tableau de voyages
-    return {success: true, data: z.array(TripFullSchema).parse(data)};
+    return { success: true, data: z.array(TripFullSchema).parse(data) };
 }
 
 //detailler
-export async function getTripFullById(idTrip : number) : Promise<TripFull | string> {
+export async function getTripFullById(idTrip: number): Promise<TripFull | string> {
     const endpoint: string = "/api/trips/" + idTrip + "/person";
 
     const option: RequestInit = { method: 'GET' };
@@ -180,7 +180,8 @@ export async function getTripFullById(idTrip : number) : Promise<TripFull | stri
 
 
 
-    export async function addTrip(prevState: unknown, formData: FormData) {
+export async function addTrip(prevState: unknown, formData: FormData) {
+    try {
         console.log('formData :', formData);
         const person_id = await getUserId();
 
@@ -197,15 +198,15 @@ export async function getTripFullById(idTrip : number) : Promise<TripFull | stri
 
         const tripData = TripCreateParams.safeParse({
             km: rawData.km,
-            person_id: person_id,
-            trip_datetime: trip_datetime,
-            available_seats: rawData.available_seats,
-            starting_address: starting_address,
-            arrival_address: arrival_address,
+            personId: person_id,
+            tripDatetime: trip_datetime,
+            availableSeats: rawData.available_seats,
+            startingAddress: starting_address,
+            arrivalAddress: arrival_address,
         });
 
         if (tripData.error) {
-            return {error: tripData.error.issues.map(e => e.message).join(", ")};
+            return { error: tripData.error.issues.map(e => e.message).join(", ") };
         }
 
         console.log("tripData to send :" + JSON.stringify(tripData.data));
@@ -222,40 +223,46 @@ export async function getTripFullById(idTrip : number) : Promise<TripFull | stri
         if (!res.ok) {
             const errorBody = await res.json();
             console.log("Error body:", errorBody);
-            return {error: "Une erreur est survenue",
-                fields: Object.fromEntries(formData), };
+            return {
+                error: "Une erreur est survenue",
+                fields: Object.fromEntries(formData),
+            };
 
         }
 
         (await cookies()).set("flash", "Votre trajet a bien été ajouté", { maxAge: 5 });
         redirect("/your-trips")
+    } catch (e) {
+        console.error("Erreur inattendue addTrip:", e);
+        return { error: "Une erreur inattendue est survenue." };
     }
+}
 
-    function prepareAdresse(city_and_code : string, street : string) : AddressSchemaType {
+function prepareAdresse(city_and_code: string, street: string): AddressSchemaType {
 
-        const [city_name, postal_code] = city_and_code.split(" ");
+    const [city_name, postal_code] = city_and_code.split(" ");
 
-        console.log("city name" + city_name);
-        const result =  AddressSchema.safeParse(
-            {
-                street_name: street,
-                postal_code: postal_code?.trim(),
-                city_name: city_name?.trim(),
-            }
-        );
-
-        if (!result.success) {
-            // Tu choisis comment gérer l'erreur : log, throw métier, valeur par défaut...
-            console.error("Erreur de validation adresse :", result.error.message);
-            throw new Error("Adresse invalide : " + result.error.message);
+    console.log("city name" + city_name);
+    const result = AddressSchema.safeParse(
+        {
+            streetName: street,
+            postalCode: postal_code?.trim(),
+            cityName: city_name?.trim(),
         }
+    );
 
-        return result.data;
+    if (!result.success) {
+        // Tu choisis comment gérer l'erreur : log, throw métier, valeur par défaut...
+        console.error("Erreur de validation adresse :", result.error.message);
+        throw new Error("Adresse invalide : " + result.error.message);
     }
+
+    return result.data;
+}
 type AddressSchemaType = z.infer<typeof AddressSchema>;
 
 
-export async function deleteTripAsDriver(idTrip : string) {
+export async function deleteTripAsDriver(idTrip: string) {
     const endpoint: string = "/api/trips/" + idTrip;
     console.log(endpoint);
     const option: RequestInit = { method: 'DELETE' };

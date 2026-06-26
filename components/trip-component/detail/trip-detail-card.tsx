@@ -16,8 +16,6 @@ interface PropsDetail {
     driverLastName: string,
 
 }
-
-
 export default function TripDetailCard(props: Readonly<PropsDetail>) {
     return (
         <Card className="w-full bg-background/80 backdrop-blur-md border border-divider shadow-md">
