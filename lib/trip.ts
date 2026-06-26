@@ -181,7 +181,6 @@ export async function getTripFullById(idTrip: number): Promise<TripFull | string
 
 
 export async function addTrip(prevState: unknown, formData: FormData) {
-    try {
         console.log('formData :', formData);
         const person_id = await getUserId();
 
@@ -232,10 +231,7 @@ export async function addTrip(prevState: unknown, formData: FormData) {
 
         (await cookies()).set("flash", "Votre trajet a bien été ajouté", { maxAge: 5 });
         redirect("/your-trips")
-    } catch (e) {
-        console.error("Erreur inattendue addTrip:", e);
-        return { error: "Une erreur inattendue est survenue." };
-    }
+    } 
 }
 
 function prepareAdresse(city_and_code: string, street: string): AddressSchemaType {
