@@ -181,61 +181,78 @@ export async function getTripFullById(idTrip: number): Promise<TripFull | string
 
 
 export async function addTrip(prevState: unknown, formData: FormData) {
-        console.log('formData :', formData);
-        const person_id = await getUserId();
+    console.log('formData :', formData);
+    const person_id = await getUserId();
 
-        const rawData = Object.fromEntries(formData.entries());
+    const rawData = Object.fromEntries(formData.entries());
 
-        const time = rawData.time.slice(0, 5)
-        const trip_datetime = `${rawData.date} ${time}`;
+    const timeRaw = rawData.time as string | undefined;
+    const dateRaw = rawData.date as string | undefined;
+
+    if (!timeRaw || !dateRaw) {
+        return {
+            error: "La date et l'heure sont requises.",
+            fields: Object.fromEntries(formData),
+        };
+    }
+
+    const time = rawData.time.slice(0, 5)
+    const trip_datetime = `${rawData.date} ${time}`;
 
 
-        const starting_address = prepareAdresse(formData.get("starting_city") as string,
-            formData.get("street_name_start") as string,);
-        const arrival_address = prepareAdresse(formData.get("end_city") as string,
-            formData.get("street_name_end") as string,);
+    const starting_address = prepareAdresse(formData.get("starting_city") as string,
+        formData.get("street_name_start") as string,);
+    const arrival_address = prepareAdresse(formData.get("end_city") as string,
+        formData.get("street_name_end") as string,);
 
-        const tripData = TripCreateParams.safeParse({
-            km: rawData.km,
-            personId: person_id,
-            tripDatetime: trip_datetime,
-            availableSeats: rawData.available_seats,
-            startingAddress: starting_address,
-            arrivalAddress: arrival_address,
-        });
+            if (!starting_address || !arrival_address) {
+        return {
+            error: "Format de ville invalide. Sélectionnez une ville depuis la liste.",
+            fields: Object.fromEntries(formData),
+        };
+    }
 
-        if (tripData.error) {
-            return { error: tripData.error.issues.map(e => e.message).join(", ") };
-        }
+    const tripData = TripCreateParams.safeParse({
+        km: rawData.km,
+        personId: person_id,
+        tripDatetime: trip_datetime,
+        availableSeats: rawData.available_seats,
+        startingAddress: starting_address,
+        arrivalAddress: arrival_address,
+    });
 
-        console.log("tripData to send :" + JSON.stringify(tripData.data));
+    if (tripData.error) {
+        return { error: tripData.error.issues.map(e => e.message).join(", ") };
+    }
 
-        const endpoint: string = "/api/trips";
+    console.log("tripData to send :" + JSON.stringify(tripData.data));
 
-        const option: RequestInit = {
-            method: 'POST',
-            body: JSON.stringify(tripData.data)
+    const endpoint: string = "/api/trips";
+
+    const option: RequestInit = {
+        method: 'POST',
+        body: JSON.stringify(tripData.data)
+    };
+
+    const res = await apiFetch(endpoint, option);
+
+    if (!res.ok) {
+        const errorBody = await res.json();
+        console.log("Error body:", errorBody);
+        return {
+            error: "Une erreur est survenue",
+            fields: Object.fromEntries(formData),
         };
 
-        const res = await apiFetch(endpoint, option);
+    }
 
-        if (!res.ok) {
-            const errorBody = await res.json();
-            console.log("Error body:", errorBody);
-            return {
-                error: "Une erreur est survenue",
-                fields: Object.fromEntries(formData),
-            };
-
-        }
-
-        (await cookies()).set("flash", "Votre trajet a bien été ajouté", { maxAge: 5 });
-        redirect("/your-trips")
+    (await cookies()).set("flash", "Votre trajet a bien été ajouté", { maxAge: 5 });
+    redirect("/your-trips")
 
 }
 
-function prepareAdresse(city_and_code: string, street: string): AddressSchemaType {
-
+function prepareAdresse(city_and_code: string, street: string): AddressSchemaType | null {
+    if (!city_and_code || !street) return null;
     const [city_name, postal_code] = city_and_code.split(" ");
 
     console.log("city name" + city_name);
